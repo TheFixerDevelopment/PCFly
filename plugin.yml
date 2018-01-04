@@ -5,7 +5,7 @@ version: 1.0
 author: Angel
 
 commands:
-  fly:
+  vmfly:
     description: "/Fly command!"
 permissions:
   fly.command:
