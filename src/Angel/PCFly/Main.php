@@ -23,7 +23,7 @@ class Main extends PluginBase implements Listener{
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool{
-        if(strtolower($command->getName()) == "fly"){
+        if(strtolower($command->getName()) == "vmfly"){
             if($sender->hasPermission("fly.command") || $sender->isOp()){
                 if(isset($this->fly[strtolower($sender->getName())])){
                     unset($this->fly[strtolower($sender->getName())]);
