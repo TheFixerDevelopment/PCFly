@@ -7,7 +7,7 @@ commands:
   fly:
     description: "/fly command!"
 permissions:
-  fly.command:
+  safefly.fly:
     default: false
   safefly.fly.off:
     default: true
