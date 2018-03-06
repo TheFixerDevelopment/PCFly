@@ -99,7 +99,7 @@ class Main extends PluginBase implements Listener{
         $player = $event->getPlayer();
         $reason = $event->getReason();
         if ($reason == "Flying is not enabled on this server") {
-            if ($this->setFlying[$player->getLowerCaseName()]) {
+            if ($event->setFlying(false);
                 $event->setCancelled(true);
             }
         }
