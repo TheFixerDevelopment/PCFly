@@ -47,7 +47,7 @@ class Main extends PluginBase implements Listener{
                 $sender->sendMessage(TextFormat::RED . 'This game is only to be used in-game!');
                 return false;
             }
-            if($sender->hasPermission('fly.command') == false or $sender->isOp() == false){
+            if($sender->hasPermission('safefly.fly') == false or $sender->isOp() == false){
                 $sender->sendMessage(TextFormat::colorize($this->cfg->get('fly_noPermission')));
                 return false;
             }
