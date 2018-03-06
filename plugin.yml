@@ -9,3 +9,6 @@ commands:
 permissions:
   fly.command:
     default: false
+  safefly.fly.off:
+    default: true
+     
