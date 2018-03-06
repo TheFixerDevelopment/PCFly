@@ -35,6 +35,21 @@ class Main extends PluginBase implements Listener{
             'fly_eventHit_disabled' => '&cNo Fly in PvP!',
         ]);
     }
+    
+    public function onJoin(PlayerJoinEvent $event){
+        $sender = $event->getPlayer();
+        if ($sender->hasPermission("safefly.fly.off")) {
+            /**
+             * onJoin if in survival mode = setAllowFlight false
+             */
+                 if($this->isPlayer($sender)) {
+                    $this->removePlayer($sender);
+                    $sender->setAllowFlight(false);
+                    $sender->sendMessage(TextFormat::GREEN . "§dYou have disabled fly mode since you joined!");
+                    return true;
+            }
+        }
+    }
     /**
      * @param CommandSender $sender
      * @param Command $command
@@ -52,6 +67,8 @@ class Main extends PluginBase implements Listener{
                 $sender->sendMessage(TextFormat::colorize($this->cfg->get('fly_noPermission')));
                 return false;
             }
+            if($this->isPlayer($sender)) {
+            $this->addPlayer($sender);
             $sender->setAllowFlight($sender->getAllowFlight() == false ? true : false);
             $sender->setFlying($sender->getAllowFlight() == false ? true : false);
             $table = [true => 'on', false => 'off'];
@@ -70,6 +87,8 @@ class Main extends PluginBase implements Listener{
                 if($entity->getAllowFlight() == true){
                     $entity->setFlying(false);
                     $entity->setAllowFlight(false);
+                    $this->isPlayer($sender);
+                    $this->removePlayer($sender);
                     $entity->sendMessage(TextFormat::colorize($this->cfg->get('fly_eventHit_disabled')));
                 }
             }
@@ -99,5 +118,14 @@ class Main extends PluginBase implements Listener{
                 $entity->setAllowFlight(false);
             }
         }
+    }
+    public function addPlayer(Player $player) {
+        $this->players[$player->getName()] = $player->getName();
+    }
+    public function isPlayer(Player $player) {
+        return in_array($player->getName(), $this->players);
+    }
+    public function removePlayer(Player $player) {
+        unset($this->players[$player->getName()]);
     }
 }
