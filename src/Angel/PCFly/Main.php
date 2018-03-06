@@ -17,27 +17,24 @@ use pocketmine\event\player\PlayerKickEvent;
  * Class Main
  * @package Angel\PCFly
  */
-class Main extends PluginBase implements Listener{
 
+class Main extends PluginBase implements Listener{
+    
     /** @var Config */
     private $cfg;
-
     public function onEnable() : void{
+        
         $this->getLogger()->info(TextFormat::GREEN . "PCFly has been enabled!");
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-
         $folder = $this->getDataFolder();
         if(is_dir($folder) == false)
             mkdir($folder);
-
         $this->cfg = is_file($folder . 'config.yml') ? new Config($folder . 'config.yml') : new Config($folder . 'config.yml', Config::YAML, [
             'fly_command.on' => '&aFly enabled',
             'fly_command.off' => '&cFly disabled!',
             'fly_eventHit_disabled' => '&cNo Fly in PvP!',
-
         ]);
     }
-
     /**
      * @param CommandSender $sender
      * @param Command $command
@@ -47,17 +44,14 @@ class Main extends PluginBase implements Listener{
      */
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
         if(strtolower($command->getName()) == 'fly'){
-
             if($sender instanceof Player == false){
                 $sender->sendMessage(TextFormat::RED . 'This game is only to be used in-game!');
                 return false;
             }
-
             if($sender->hasPermission('fly.command') == false or $sender->isOp() == false){
                 $sender->sendMessage(TextFormat::colorize($this->cfg->get('fly_noPermission')));
                 return false;
             }
-
             $sender->setAllowFlight($sender->getAllowFlight() == false ? true : false);
             $sender->setFlying($sender->getAllowFlight() == false ? true : false);
             $table = [true => 'on', false => 'off'];
@@ -66,7 +60,6 @@ class Main extends PluginBase implements Listener{
         }
         return true;
     }
-
     /**
      * @param EntityDamageEvent $event
      */
@@ -90,7 +83,7 @@ class Main extends PluginBase implements Listener{
         $player = $event->getPlayer();
         $reason = $event->getReason();
         if ($reason == "Flying is not enabled on this server") {
-            if (isset($this->setFlying[$player->getLowerCaseName()]) {
+            if ($this->setFlying[$player->getLowerCaseName()]) {
                 $event->setCancelled(true);
             }
         }
