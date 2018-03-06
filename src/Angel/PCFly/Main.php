@@ -104,8 +104,9 @@ class Main extends PluginBase implements Listener{
                  $event->setFlying(false);
                  $event->setAllowFlight(false);
                  $event->setCancelled(true);
-            }
-        }
+             }
+          }
+       }
     }
     /**
      * @param EntityLevelChangeEvent $event
