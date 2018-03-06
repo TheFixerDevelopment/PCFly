@@ -11,6 +11,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityLevelChangeEvent;
+use pocketmine\event\player\PlayerKickEvent;
 
 /**
  * Class Main
@@ -81,7 +82,19 @@ class Main extends PluginBase implements Listener{
             }
         }
     }
-
+    
+    /**
+    * @param PlayerKickEvent $event) : void{
+    */
+    public function onKick(PlayerKickEvent $event) : void {
+        $player = $event->getPlayer();
+        $reason = $event->getReason();
+        if ($reason == "Flying is not enabled on this server") {
+            if (isset($this->setFlying[$player->getLowerCaseName()]) {
+                $event->setCancelled(true);
+            }
+        }
+    }
     /**
      * @param EntityLevelChangeEvent $event
      */
