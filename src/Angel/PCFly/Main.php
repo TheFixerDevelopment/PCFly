@@ -1,7 +1,5 @@
 <?php
-
 namespace Angel\PCFly;
-
 use pocketmine\Player;
 use pocketmine\utils\Config;
 use pocketmine\event\Listener;
@@ -10,14 +8,13 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\entity\EntityLevelChangeEvent;
+use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerKickEvent;
-
+use pocketmine\event\entity\EntityLevelChangeEvent;
 /**
  * Class Main
  * @package Angel\PCFly
  */
-
 class Main extends PluginBase implements Listener{
     
     /** @var Config */
@@ -33,23 +30,10 @@ class Main extends PluginBase implements Listener{
             'fly_command.on' => '&aFly enabled',
             'fly_command.off' => '&cFly disabled!',
             'fly_eventHit_disabled' => '&cNo Fly in PvP!',
+            'fly_disabled_onjoin' => '&dYour fly was disabled since you joined.'
         ]);
     }
-    
-    public function onJoin(PlayerJoinEvent $event){
-        $sender = $event->getPlayer();
-        if ($sender->hasPermission("safefly.fly.off")) {
-            /**
-             * onJoin if in survival mode = setAllowFlight false
-             */
-                 if($this->isPlayer($sender)) {
-                    $this->removePlayer($sender);
-                    $sender->setAllowFlight(false);
-                    $sender->sendMessage(TextFormat::GREEN . "§dYou have disabled fly mode since you joined!");
-                    return true;
-            }
-        }
-    }
+
     /**
      * @param CommandSender $sender
      * @param Command $command
@@ -67,8 +51,6 @@ class Main extends PluginBase implements Listener{
                 $sender->sendMessage(TextFormat::colorize($this->cfg->get('fly_noPermission')));
                 return false;
             }
-            if($this->isPlayer($sender)) {
-            $this->addPlayer($sender);
             $sender->setAllowFlight($sender->getAllowFlight() == false ? true : false);
             $sender->setFlying($sender->getAllowFlight() == false ? true : false);
             $table = [true => 'on', false => 'off'];
@@ -77,9 +59,11 @@ class Main extends PluginBase implements Listener{
         }
         return true;
     }
+    
     /**
      * @param EntityDamageEvent $event
      */
+     
     public function onDamage(EntityDamageEvent $event) : void{
         $entity = $event->getEntity();
         if($event->getCause() !== $event::CAUSE_FALL){
@@ -87,14 +71,27 @@ class Main extends PluginBase implements Listener{
                 if($entity->getAllowFlight() == true){
                     $entity->setFlying(false);
                     $entity->setAllowFlight(false);
-                    $this->isPlayer($sender);
-                    $this->removePlayer($sender);
                     $entity->sendMessage(TextFormat::colorize($this->cfg->get('fly_eventHit_disabled')));
                 }
             }
         }
     }
     
+    public function onJoin(PlayerJoinEvent $event){
+        $sender = $event->getPlayer();
+        if ($sender->hasPermission("safefly.fly.off")) {
+            /**
+             * onJoin if in survival mode = setAllowFlight false
+             */
+             if($sender instanceof Player){
+                if($sender->getAllowFlight() == true){
+                    $sender->setFlying(false);
+                    $sender->setAllowFlight(false);
+                    $sender->sendMessage(TextFormat::colorize($this->cfg->get('fly_disabled_onjoin')));
+                }
+            }
+        }
+    }
     /**
     * @param PlayerKickEvent $event) : void{
     */
@@ -119,13 +116,4 @@ class Main extends PluginBase implements Listener{
             }
         }
     }
-    public function addPlayer(Player $player) {
-        $this->players[$player->getName()] = $player->getName();
-    }
-    public function isPlayer(Player $player) {
-        return in_array($player->getName(), $this->players);
-    }
-    public function removePlayer(Player $player) {
-        unset($this->players[$player->getName()]);
-    }
-}
+}    
