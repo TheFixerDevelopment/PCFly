@@ -30,7 +30,7 @@ class Main extends PluginBase implements Listener{
             'fly_command.on' => '&aFly enabled',
             'fly_command.off' => '&cFly disabled!',
             'fly_eventHit_disabled' => '&cNo Fly in PvP!',
-            'fly_disabled_onjoin' => '&dYour fly was disabled since you joined.'
+            'fly_disabled_onjoin' => '&dYour fly was disabled since you joined.',
         ]);
     }
 
